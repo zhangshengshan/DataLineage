@@ -10,9 +10,7 @@ import org.apache.commons.dbcp2.BasicDataSource
 import java.sql.DriverManager
 import java.util.Properties
 
-
 object FieldLineageExample extends App {
-
 
   import org.apache.calcite.sql.parser.SqlParser
 
@@ -48,16 +46,13 @@ object FieldLineageExample extends App {
 
   val schema = rootSchema.add("anneng_ods", JdbcSchema.create(rootSchema, null, dataSource, null, null))
 
-  //  anneng_ods
-
   val config = Frameworks.newConfigBuilder()
     .parserConfig(parserConfig)
     .defaultSchema(rootSchema) // Set default schema
     .build()
   val planner = Frameworks.getPlanner(config)
 
-
-  println("work!")
+  println("Starting SQL parsing and validation")
 
   // Parse and validate the SQL query
   val parsedSqlNode = planner.parse(sql)
@@ -66,12 +61,15 @@ object FieldLineageExample extends App {
   // Generate the query plan
   val relRoot: RelRoot = planner.rel(validatedSqlNode)
 
+  // Print the relational algebra tree
+  println(s"Relational Algebra Tree: ${relRoot.rel.explain()}")
+
   // Traverse query plan, extract field lineage information
   val fieldLineageShuttle: FieldLineageShuttle = new FieldLineageShuttle()
   relRoot.rel.accept(fieldLineageShuttle)
-  // 打印字段血缘信息
 
-  println(fieldLineageShuttle.lineage.isEmpty)
+  println("Field lineage extraction complete")
+  println(s"Lineage map is empty: ${fieldLineageShuttle.lineage.isEmpty}")
 
   fieldLineageShuttle.lineage.foreach {
     case (alias, original) => println(s"$alias <- $original")
