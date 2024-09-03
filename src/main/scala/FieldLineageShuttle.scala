@@ -18,6 +18,8 @@ class FieldLineageShuttle extends RelVisitor {
         tables += tableName
       case _ =>
         println("Processing other node")
+
+
     }
     super.visit(node, ordinal, parent)
   }
