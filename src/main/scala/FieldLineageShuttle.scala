@@ -11,6 +11,7 @@ class FieldLineageShuttle extends RelShuttleImpl {
   val lineage = mutable.Map[String, String]()
 
   override def visit(node: RelNode): RelNode = {
+    println("Entering visit method")
     println(s"Visiting node: ${node.getClass.getSimpleName}")
     node match {
       case project: Project =>
