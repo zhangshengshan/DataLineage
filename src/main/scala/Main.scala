@@ -68,18 +68,13 @@ object FieldLineageExample extends App {
 
   // Traverse query plan, extract field lineage information
 
-  import org.apache.calcite.rel.{RelNode, RelShuttleImpl}
+  val fieldLineageShuttle = new FieldLineageShuttle()
+  relRoot.rel.accept(fieldLineageShuttle)
+  // 打印字段血缘信息
 
-  class CustomRelShuttle extends RelShuttleImpl {
-    override def visit(node: RelNode): RelNode = {
-      println("RelNode: " + node.getClass.getSimpleName)
-      println(":=============")
+  println(fieldLineageShuttle.lineage.isEmpty)
 
-      println("RelNode: " + node.getClass.getSimpleName)
-      super.visit(node)
-    }
+  fieldLineageShuttle.lineage.foreach {
+    case (alias, original) => println(s"$alias <- $original")
   }
-
-  // Use the custom shuttle to traverse the query plan
-  relRoot.rel.accept(new CustomRelShuttle())
 }
