@@ -11,8 +11,10 @@ class FieldLineageShuttle extends RelShuttleImpl {
   val lineage = mutable.Map[String, String]()
 
   override def visit(node: RelNode): RelNode = {
+    println("00000")
     node match {
       case project: Project =>
+        println("11111")
         val input = project.getInput
         val projects = project.getProjects
         val fieldNames = project.getRowType.getFieldNames
@@ -28,8 +30,10 @@ class FieldLineageShuttle extends RelShuttleImpl {
         }
         super.visit(project)
       case tableScan: TableScan =>
+        println("22222")
         super.visit(tableScan)
       case _ =>
+        println("33333")
         super.visit(node)
     }
   }

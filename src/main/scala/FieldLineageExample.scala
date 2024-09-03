@@ -67,8 +67,7 @@ object FieldLineageExample extends App {
   val relRoot: RelRoot = planner.rel(validatedSqlNode)
 
   // Traverse query plan, extract field lineage information
-
-  val fieldLineageShuttle = new FieldLineageShuttle()
+  val fieldLineageShuttle: FieldLineageShuttle = new FieldLineageShuttle()
   relRoot.rel.accept(fieldLineageShuttle)
   // 打印字段血缘信息
 
