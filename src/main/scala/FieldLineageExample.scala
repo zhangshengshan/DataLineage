@@ -21,8 +21,11 @@ object FieldLineageExample extends App {
     .build()
 
   val sql =
-    """SELECT a as fa, b as fb, c as fc FROM
-      | anneng_ods.a
+    """SELECT
+      |a.a as fa, a.b as fb, a.c as fc,
+      |b.a as fa1 , b.b as fb1 ,b.c as fc1 FROM
+      | anneng_ods.a as a left outer join anneng_ods.b as b
+      | on a.a = b.a
       | """.stripMargin
   // Parse SQL query
   val parser = SqlParser.create(sql)
@@ -64,14 +67,10 @@ object FieldLineageExample extends App {
   // Print the relational algebra tree
   println(s"Relational Algebra Tree: ${relRoot.rel.explain()}")
 
-  // Traverse query plan, extract field lineage information
+  // Traverse query plan, extract table names
   val fieldLineageShuttle: FieldLineageShuttle = new FieldLineageShuttle()
-  relRoot.rel.accept(fieldLineageShuttle)
+  fieldLineageShuttle.go(relRoot.rel) // Use the go method of RelVisitor
 
-  println("Field lineage extraction complete")
-  println(s"Lineage map is empty: ${fieldLineageShuttle.lineage.isEmpty}")
-
-  fieldLineageShuttle.lineage.foreach {
-    case (alias, original) => println(s"$alias <- $original")
-  }
+  println("Table extraction complete")
+  println(s"Tables found: ${fieldLineageShuttle.tables.mkString(", ")}")
 }
