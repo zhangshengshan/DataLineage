@@ -67,10 +67,15 @@ object FieldLineageExample extends App {
   // Print the relational algebra tree
   println(s"Relational Algebra Tree: ${relRoot.rel.explain()}")
 
-  // Traverse query plan, extract table names
+  // Traverse query plan, extract table names and field aliases
   val fieldLineageShuttle: FieldLineageShuttle = new FieldLineageShuttle()
   fieldLineageShuttle.go(relRoot.rel) // Use the go method of RelVisitor
 
   println("Table extraction complete")
   println(s"Tables found: ${fieldLineageShuttle.tables.mkString(", ")}")
+
+  println("Field alias extraction complete")
+  fieldLineageShuttle.fieldAliases.foreach {
+    case (alias, original) => println(s"$alias <- $original")
+  }
 }
