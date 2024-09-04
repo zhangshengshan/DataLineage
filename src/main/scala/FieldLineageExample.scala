@@ -24,8 +24,8 @@ object FieldLineageExample extends App {
     """SELECT
       |a.a as fa, a.b as fb, a.c as fc,
       |b.a as fa1 , b.b as fb1 ,b.c as fc1 FROM
-      | anneng_ods.a as a left outer join anneng_ods.b as b
-      | on a.a = b.a
+      |anneng_ods.a as a left outer join anneng_ods.b as b
+      |on a.a = b.a
       | """.stripMargin
   // Parse SQL query
   val parser = SqlParser.create(sql)
